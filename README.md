@@ -33,3 +33,15 @@ hex for the specific action is reached.
 order place if Lacerda travels this round. The secondary is to be used in case
 the primary is already occupied by the human player. The lack of these markers
 on the card indicates that Lacerda does not use the Shuttle this round.
+
+
+
+**DISCLAIMER**: I've put together this project to streamline my solo games a
+bit, and a web application seemed the most reasonable choice. That said, I'm not
+a web developer, so the code might not be as pretty as it should be. Neither is
+the application itself: the card images are made from a photo taken with my
+cellphone... I also didn't want to torture myself with measuring pixels and
+calculating positions, so every layer is a full-sized image. Interactions with
+the app are not that frequent (once in a round), so this should not be a real
+problem though. To summarize: it's a working, but quick&dirty solution.
+
