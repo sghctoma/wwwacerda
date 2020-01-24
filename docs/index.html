@@ -28,7 +28,6 @@
                 ctx.drawImage(background, 0, 0, c.width, c.height);
 
                 var txtRoundLabel = "ROUND " + current_round;
-                var metrics = ctx.measureText(txtRoundLabel);
                 ctx.fillStyle = "white";
                 // OK, this next line is hacky af, but simple, and works...
                 ctx.font = 42 * (c.width / background.width) + "px Blender Pro";
@@ -71,6 +70,10 @@
                     current_card = draw();
                     console.debug(current_card);
                     refresh_canvas(current_card);
+                    if (current_round == 42) {
+                        alert("Congrats! You've just reached the Answer to the Ultimate Question of Life, the Universe, and Everything!");
+                    }
+
                 }
 
                 window.onresize();
