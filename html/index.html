@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="viewport" content="width=device-width user-scalable=no">
+    <style>
+    @font-face {font-family: "Blender Pro"; src: url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.eot"); src: url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.eot?#iefix") format("embedded-opentype"), url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff2") format("woff2"), url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff") format("woff"), url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.ttf") format("truetype"), url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.svg#Blender Pro") format("svg"); }
+    </style>
+    </head>
+
+    <body bgcolor="#ffffff">
+        <canvas id="card" width="1018" height="1559">
+            Your browser does not support the HTML5 canvas tag.
+        </canvas>
+
+        <script type="text/javascript" src="images.js"></script>
+        <script type="text/javascript" src="lacerda.js"></script>
+        <script>
+            var current_card = null;    // XXX: These does not work if placed in lacerda.js
+            var current_round = 0;
+
+            var refresh_canvas = function(card) {
+                console.debug("refreshing canvas");
+
+                var c = document.getElementById("card");
+                var ctx = c.getContext("2d");
+                ctx.drawImage(background, 0, 0, c.width, c.height);
+
+                ctx.font = "30px Blender Pro";
+                ctx.fillText("ROUND " + current_round, c.width-150, c.height-50);
+
+                if (card != null) {
+                    ctx.drawImage(actions[card[0]-1], 0, 0, c.width, c.height);
+                    ctx.drawImage(missions[card[1]], 0, 0, c.width, c.height);
+                    ctx.drawImage(hex_tiebreakers[card[2]], 0, 0, c.width, c.height);
+
+                    if (card.length > 3) {
+                        ctx.drawImage(turnorder, 0, 0, c.width, c.height);
+                        ctx.drawImage(primary_turnorders[card[3]], 0, 0, c.width, c.height);
+                        ctx.drawImage(secondary_turnorders[card[4]], 0, 0, c.width, c.height);
+                    }
+                }
+            }
+            
+            window.resize = function() {
+                console.debug("resizing window");
+
+                var c = document.getElementById("card");
+
+                w = 0.95 * window.innerWidth;
+                h = 0.95 * window.innerHeight;
+                if (w/h <= 1018/1559) {
+                    c.width = w;
+                    c.height = w * (1559 / 1018);
+                } else {
+                    c.width = h * (1018 / 1559);
+                    c.height = h;
+                }
+
+                refresh_canvas(current_card);
+            }
+
+            window.onload = function() {
+                var c = document.getElementById("card");
+                c.onclick = function() {
+                    current_card = draw();
+                    console.debug(current_card);
+                    refresh_canvas(current_card);
+                }
+
+                window.resize();
+
+                var ctx = c.getContext("2d");
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, c.width, c.height);
+                ctx.drawImage(background, 0, 0, c.width, c.height);
+            }
+        </script>
+
+</body>
+</html>
+
