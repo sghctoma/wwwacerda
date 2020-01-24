@@ -34,7 +34,11 @@ order place if Lacerda travels this round. The secondary is to be used in case
 the primary is already occupied by the human player. The lack of these markers
 on the card indicates that Lacerda does not use the Shuttle this round.
 
+The following image explains how these information are presented:
 
+![manual](manual.png)
+
+<hr />
 
 **DISCLAIMER**: I've put together this project to streamline my solo games a
 bit, and a web application seemed the most reasonable choice. That said, I'm not
