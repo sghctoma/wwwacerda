@@ -25,15 +25,19 @@
 
                 var c = document.getElementById("card");
                 var ctx = c.getContext("2d");
-                ctx.drawImage(background, 0, 0, c.width, c.height);
-
-                var txtRoundLabel = "ROUND " + current_round;
                 ctx.fillStyle = "white";
                 // OK, this next line is hacky af, but simple, and works...
                 ctx.font = 42 * (c.width / background.width) + "px Blender Pro";
-                ctx.fillText(txtRoundLabel, 0.75*c.width, 0.96*c.height);
+                ctx.drawImage(background, 0, 0, c.width, c.height);
 
-                if (card != null) {
+                if (card == null) {
+                    var txtInstruction = "Click to draw, refresh to restart!";
+                    var m = ctx.measureText(txtInstruction);
+                    ctx.fillText(txtInstruction, c.width/2-m.width/2, 0.96*c.height);
+                } else {
+                    var txtRoundLabel = "ROUND " + current_round;
+                    ctx.fillText(txtRoundLabel, 0.75*c.width, 0.96*c.height);
+
                     ctx.drawImage(actions[card[0]-1], 0, 0, c.width, c.height);
                     ctx.drawImage(missions[card[1]], 0, 0, c.width, c.height);
                     ctx.drawImage(hex_tiebreakers[card[2]], 0, 0, c.width, c.height);
@@ -77,11 +81,6 @@
                 }
 
                 window.onresize();
-
-                var ctx = c.getContext("2d");
-                ctx.fillStyle = "white";
-                ctx.fillRect(0, 0, c.width, c.height);
-                ctx.drawImage(background, 0, 0, c.width, c.height);
             }
         </script>
 
