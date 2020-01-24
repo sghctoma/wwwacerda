@@ -10,14 +10,14 @@
     </head>
 
     <body bgcolor="#ffffff">
-        <canvas id="card" width="1018" height="1559">
+        <canvas id="card">
             Your browser does not support the HTML5 canvas tag.
         </canvas>
 
         <script type="text/javascript" src="images.js"></script>
         <script type="text/javascript" src="lacerda.js"></script>
         <script>
-            var current_card = null;    // XXX: These does not work if placed in lacerda.js
+            var current_card = null;    // XXX: These does not seem to work if placed in lacerda.js
             var current_round = 0;
 
             var refresh_canvas = function(card) {
@@ -27,8 +27,12 @@
                 var ctx = c.getContext("2d");
                 ctx.drawImage(background, 0, 0, c.width, c.height);
 
-                ctx.font = "30px Blender Pro";
-                ctx.fillText("ROUND " + current_round, c.width-150, c.height-50);
+                var txtRoundLabel = "ROUND " + current_round;
+                var metrics = ctx.measureText(txtRoundLabel);
+                ctx.fillStyle = "white";
+                // OK, this next line is hacky af, but simple, and works...
+                ctx.font = 42 * (c.width / background.width) + "px Blender Pro";
+                ctx.fillText(txtRoundLabel, 0.75*c.width, 0.96*c.height);
 
                 if (card != null) {
                     ctx.drawImage(actions[card[0]-1], 0, 0, c.width, c.height);
@@ -43,18 +47,18 @@
                 }
             }
             
-            window.resize = function() {
+            window.onresize = function() {
                 console.debug("resizing window");
 
                 var c = document.getElementById("card");
 
                 w = 0.95 * window.innerWidth;
                 h = 0.95 * window.innerHeight;
-                if (w/h <= 1018/1559) {
+                if (w/h <= img_ratio) {
                     c.width = w;
-                    c.height = w * (1559 / 1018);
+                    c.height = w / img_ratio;
                 } else {
-                    c.width = h * (1018 / 1559);
+                    c.width = h * img_ratio;
                     c.height = h;
                 }
 
@@ -69,7 +73,7 @@
                     refresh_canvas(current_card);
                 }
 
-                window.resize();
+                window.onresize();
 
                 var ctx = c.getContext("2d");
                 ctx.fillStyle = "white";
