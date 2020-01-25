@@ -4,8 +4,16 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes" /> 
     <meta name="viewport" content="width=device-width user-scalable=no">
+    <link rel="preload" href="//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff2" as="font" type="font/woff2" crossorigin>
     <style>
-    @font-face {font-family: "Blender Pro"; src: url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.eot"); src: url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.eot?#iefix") format("embedded-opentype"), url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff2") format("woff2"), url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff") format("woff"), url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.ttf") format("truetype"), url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.svg#Blender Pro") format("svg"); }
+    @font-face {
+        font-family: "Blender Pro";
+        src: url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff2") format("woff2"),
+            url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff") format("woff"),
+            url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.eot?#iefix") format("embedded-opentype"),
+            url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.ttf") format("truetype"),
+            url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.svg#Blender Pro") format("svg"); 
+        }
     </style>
     </head>
 
@@ -17,10 +25,11 @@
         <script type="text/javascript" src="images.js"></script>
         <script type="text/javascript" src="lacerda.js"></script>
         <script>
-            var current_card = null;    // XXX: These does not seem to work if placed in lacerda.js
+            var current_card = null;    // XXX: These does not seem to work if placed in lacerda.js or images.js
             var current_round = 0;
+            var img_ratio;
 
-            var refresh_canvas = function(card) {
+            function refresh_canvas(card) {
                 console.debug("refreshing canvas");
 
                 var c = document.getElementById("card");
@@ -55,6 +64,7 @@
 
                 var c = document.getElementById("card");
 
+                img_ratio = background.width / background.height;
                 w = 0.95 * window.innerWidth;
                 h = 0.95 * window.innerHeight;
                 if (w/h <= img_ratio) {

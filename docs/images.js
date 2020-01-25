@@ -3,8 +3,6 @@ var IMG_BASE = "img/";
 var background = new Image();
 background.src = IMG_BASE + "background.png";
 
-var img_ratio = background.width / background.height;
-
 var turnorder = new Image();
 turnorder.src = IMG_BASE + "turnorder.png";
 
