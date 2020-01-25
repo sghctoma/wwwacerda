@@ -1,4 +1,6 @@
-# wwwacerda
+# On Mars solo helper app
+
+## Intro
 
 The solo variant of the boardgame On Mars (designed by Vital Lacerda, published
 by Eagle-Gryphon Games) requires the human player to make certain decisions on
@@ -21,22 +23,48 @@ The solo deck contains the following twelve cards:
  - action 3, mission C, travel
 
 The application uses the same cards, but presents the information a bit
-differently, and also gives the following random choices:
+differently, and also helps choosing random actions.
 
-**Hex tiebreaker**: This one is to be used during Constructions, Building
+## Random actions
+
+### Hex tiebreaker
+
+This one is to be used during Constructions, Building
 Upgrades and Rover movement, when a random choice is necessary. The method is
 "stolen" from Tapestry's Automaa, i.e. the application gives a starting row and
 a starting tile, and the player have to sweep the board row by row until a valid
 hex for the specific action is reached. 
 
-**Turn order place**: This one gives the player a primary and a secondary turn
-order place if Lacerda travels this round. The secondary is to be used in case
-the primary is already occupied by the human player. The lack of these markers
-on the card indicates that Lacerda does not use the Shuttle this round.
+### Turn order place
+
+This one gives the player a primary and a secondary turn
+order place. Only available if Lacerda travels this Round (the Shuttle indicator
+is present on the card), and the user clicked the card (in order to hide
+Lacerda's choice at the beginning of the Round). 
+
+### General purpose random numbers
+
+There are other situations in the game when
+a random choice is required (e.g. Lacerda takes a scientist, but neither of you
+have any Advanced Buildings). The application provides three random numbers per
+turn in three different ranges: 1-4, 1-6 and 1-8. This feature might change in
+the future depending on how useful it is (e.g. it might be possible in the
+future to generate new ones within a Round).
 
 The following image explains how these information are presented:
 
 ![manual](manual.png)
+
+## Usage
+
+Load the [application](https://sghctoma.github.io/wwwacerda) in a web browser,
+and start clicking :) The application only "replaces" the solo cards, i.e. it
+won't give you an initial Turn Order spot for Lacerda - you still have to do it
+as written in the rulebook. Your first click reveals Lacerda's first action. If
+Lacerda uses the Shuttle this Round, the next click reveals the Turn Order spot
+he chooses, and the next action is revealed only after another click. If he
+does not use the Shuttle in a Round, the click immediately reveals the next
+action.
 
 <hr />
 
