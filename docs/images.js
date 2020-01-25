@@ -51,7 +51,7 @@ var missions = [
     new Image()
 ];
 
-missions[0].src = IMG_BASE + "mission_none.png";
+missions[0].alt = "";
 missions[1].src = IMG_BASE + "mission_a.png";
 missions[2].src = IMG_BASE + "mission_b.png";
 missions[3].src = IMG_BASE + "mission_c.png";

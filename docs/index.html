@@ -3,7 +3,7 @@
     <head>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes" /> 
-    <meta name="viewport" content="width=device-width user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no">
     <link rel="preload" href="//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff2" as="font" type="font/woff2" crossorigin>
     <style>
     @font-face {
@@ -14,6 +14,11 @@
             url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.ttf") format("truetype"),
             url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.svg#Blender Pro") format("svg"); 
         }
+        canvas {
+            padding: 0;
+            margin: auto;
+            display: block;
+        }
     </style>
     </head>
 
@@ -21,11 +26,13 @@
         <canvas id="card">
             Your browser does not support the HTML5 canvas tag.
         </canvas>
+        <br />
 
         <script type="text/javascript" src="images.js"></script>
         <script type="text/javascript" src="lacerda.js"></script>
         <script>
             var current_card = null;    // XXX: These does not seem to work if placed in lacerda.js or images.js
+            var current_phase = "colonisation";
             var current_round = 0;
             var img_ratio;
 
@@ -48,13 +55,18 @@
                     ctx.fillText(txtRoundLabel, 0.75*c.width, 0.96*c.height);
 
                     ctx.drawImage(actions[card[0]-1], 0, 0, c.width, c.height);
-                    ctx.drawImage(missions[card[1]], 0, 0, c.width, c.height);
                     ctx.drawImage(hex_tiebreakers[card[2]], 0, 0, c.width, c.height);
+                    ctx.drawImage(missions[card[1]], 0, 0, c.width, c.height);
+
+                    ctx.fillStyle = "black";
+                    ctx.font = 40 * (c.width / background.width) + "px Blender Pro";
+                    ctx.fillText("RND4: " + (randInt(4)+1), 0.05*c.width, 0.80*c.height);
+                    ctx.fillText("RND6: " + (randInt(6)+1), 0.05*c.width, 0.82*c.height);
+                    ctx.fillText("RND8: " + (randInt(8)+1), 0.05*c.width, 0.84*c.height);
 
                     if (card.length > 3) {
-                        ctx.drawImage(turnorder, 0, 0, c.width, c.height);
-                        ctx.drawImage(primary_turnorders[card[3]], 0, 0, c.width, c.height);
-                        ctx.drawImage(secondary_turnorders[card[4]], 0, 0, c.width, c.height);
+                        ctx.font = 80 * (c.width / background.width) + "px Blender Pro";
+                        ctx.fillText(">", 0.66*c.width, 0.82*c.height);
                     }
                 }
             }
@@ -63,10 +75,11 @@
                 console.debug("resizing window");
 
                 var c = document.getElementById("card");
+                var b = document.getElementById("btnRandom");
 
                 img_ratio = background.width / background.height;
-                w = 0.95 * window.innerWidth;
-                h = 0.95 * window.innerHeight;
+                w = 0.98 * window.innerWidth;
+                h = 0.98 * window.innerHeight;
                 if (w/h <= img_ratio) {
                     c.width = w;
                     c.height = w / img_ratio;
@@ -74,20 +87,36 @@
                     c.width = h * img_ratio;
                     c.height = h;
                 }
-
                 refresh_canvas(current_card);
+
+                b.width = w;
             }
 
             window.onload = function() {
                 var c = document.getElementById("card");
                 c.onclick = function() {
-                    current_card = draw();
-                    console.debug(current_card);
-                    refresh_canvas(current_card);
-                    if (current_round == 42) {
-                        alert("Congrats! You've just reached the Answer to the Ultimate Question of Life, the Universe, and Everything!");
-                    }
+                    switch (current_phase) {
+                        case "shuttle":
+                            current_phase = "colonisation";
 
+                            var ctx = c.getContext("2d");
+                            ctx.drawImage(turnorder, 0, 0, c.width, c.height);
+                            ctx.drawImage(primary_turnorders[current_card[3]], 0, 0, c.width, c.height);
+                            ctx.drawImage(secondary_turnorders[current_card[4]], 0, 0, c.width, c.height);
+                            break;
+                        case "colonisation":
+                            current_card = draw();
+                            console.debug(current_card);
+                            refresh_canvas(current_card);
+                            if (current_card.length > 3) {
+                                current_phase = "shuttle";
+                            }
+
+                            if (current_round == 42) {
+                                alert("Congrats! You've just reached the Answer to the Ultimate Question of Life, the Universe, and Everything!");
+                            }
+                            break;
+                    }
                 }
 
                 window.onresize();
