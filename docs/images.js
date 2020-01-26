@@ -45,13 +45,12 @@ hex_tiebreakers[10].src = IMG_BASE + "hex_tiebreaker_west_down.png";
 hex_tiebreakers[11].src = IMG_BASE + "hex_tiebreaker_west_up.png";
 
 var missions = [
-    new Image(),
+    null,
     new Image(),
     new Image(),
     new Image()
 ];
 
-missions[0].alt = "";
 missions[1].src = IMG_BASE + "mission_a.png";
 missions[2].src = IMG_BASE + "mission_b.png";
 missions[3].src = IMG_BASE + "mission_c.png";

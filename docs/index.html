@@ -56,7 +56,9 @@
 
                     ctx.drawImage(actions[card[0]-1], 0, 0, c.width, c.height);
                     ctx.drawImage(hex_tiebreakers[card[2]], 0, 0, c.width, c.height);
-                    ctx.drawImage(missions[card[1]], 0, 0, c.width, c.height);
+                    if (card[1] != 0) {
+                        ctx.drawImage(missions[card[1]], 0, 0, c.width, c.height);
+                    }
 
                     ctx.fillStyle = "black";
                     ctx.font = 40 * (c.width / background.width) + "px Blender Pro";
@@ -75,7 +77,6 @@
                 console.debug("resizing window");
 
                 var c = document.getElementById("card");
-                var b = document.getElementById("btnRandom");
 
                 img_ratio = background.width / background.height;
                 w = 0.98 * window.innerWidth;
@@ -88,8 +89,6 @@
                     c.height = h;
                 }
                 refresh_canvas(current_card);
-
-                b.width = w;
             }
 
             window.onload = function() {
