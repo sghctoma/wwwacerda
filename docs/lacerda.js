@@ -13,8 +13,7 @@ class State {
         this.hexTiebreaker = hexTiebreaker;
         this.contractTiebreaker = contractTiebreaker;
         this.techTiebreaker = techTiebreaker;
-        this.primaryTurnorder = null;
-        this.secondaryTurnorder = null;
+        this.turnOrders = null;
     }
 }
 
@@ -41,8 +40,8 @@ class Lacerda {
         this.shuffle();
 
         this.currentRound = 0;
-        this.currentPhase = null;
-        this.history = [];
+        this.currentPhase = "colonisation";
+        this.history = [null];
     }
 
     randInt(max) {
@@ -91,20 +90,23 @@ class Lacerda {
             tmp.splice(primaryTurnorder, 1)
             var secondaryTurnorder = tmp[this.randInt(3)];
 
-            state.primaryTurnorder = primaryTurnorder;
-            state.secondaryTurnorder = secondaryTurnorder;
+            state.turnOrders = [primaryTurnorder, secondaryTurnorder];
         }
 
         this.history.push(state);
     }
 
+    currentState() {
+        return this.history[this.currentRound];
+    }
+
     nextState() {
         this.currentRound += 1;
-        if (this.history.length < this.currentRound) {
+        if (this.history.length <= this.currentRound) {
             this.draw();
         }
 
-        return this.history[this.currentRound-1];
+        return this.history[this.currentRound];
     }
 
     prevState() {
@@ -112,12 +114,14 @@ class Lacerda {
             return null;
         } else {
             this.currentRound -= 1;
-            return this.history[this.currentRound-1];
+            return this.history[this.currentRound];
         }
     }
 }
 
 lacerda = new Lacerda();
+console.debug(lacerda.currentState());
+/*
 console.debug(lacerda.nextState());
 console.debug(lacerda.nextState());
 console.debug(lacerda.nextState());
@@ -133,4 +137,4 @@ console.debug("------------------------------");
 
 console.debug(lacerda.history);
 console.debug(lacerda.currentRound);
-
+*/

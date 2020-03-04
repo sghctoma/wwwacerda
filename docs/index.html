@@ -31,12 +31,10 @@
         <script type="text/javascript" src="images.js"></script>
         <script type="text/javascript" src="lacerda.js"></script>
         <script>
-            var current_card = null;    // XXX: These does not seem to work if placed in lacerda.js or images.js
-            var current_phase = "colonisation";
-            var current_round = 0;
+            var lacerda = new Lacerda();
             var img_ratio;
 
-            function refresh_canvas(card) {
+            function refresh_canvas() {
                 console.debug("refreshing canvas");
 
                 var c = document.getElementById("card");
@@ -46,27 +44,28 @@
                 ctx.font = 42 * (c.width / background.width) + "px Blender Pro";
                 ctx.drawImage(background, 0, 0, c.width, c.height);
 
-                if (card == null) {
+                var state = lacerda.currentState();
+
+                if (state == null) {
                     var txtInstruction = "Click to draw, refresh to restart!";
                     var m = ctx.measureText(txtInstruction);
                     ctx.fillText(txtInstruction, c.width/2-m.width/2, 0.96*c.height);
                 } else {
-                    var txtRoundLabel = "ROUND " + current_round;
+                    var txtRoundLabel = "ROUND " + lacerda.currentRound;
                     ctx.fillText(txtRoundLabel, 0.75*c.width, 0.96*c.height);
 
-                    ctx.drawImage(actions[card[0]-1], 0, 0, c.width, c.height);
-                    ctx.drawImage(hex_tiebreakers[card[2]], 0, 0, c.width, c.height);
-                    if (card[1] != 0) {
-                        ctx.drawImage(missions[card[1]], 0, 0, c.width, c.height);
+                    ctx.drawImage(actions[state.action-1], 0, 0, c.width, c.height);
+                    ctx.drawImage(hex_tiebreakers[state.hexTiebreaker], 0, 0, c.width, c.height);
+                    if (state.mission != null) {
+                        ctx.drawImage(missions[state.mission], 0, 0, c.width, c.height);
                     }
 
                     ctx.fillStyle = "black";
                     ctx.font = 40 * (c.width / background.width) + "px Blender Pro";
-                    ctx.fillText("RND4: " + (randInt(4)+1), 0.05*c.width, 0.80*c.height);
-                    ctx.fillText("RND6: " + (randInt(6)+1), 0.05*c.width, 0.82*c.height);
-                    ctx.fillText("RND8: " + (randInt(8)+1), 0.05*c.width, 0.84*c.height);
+                    ctx.fillText("RND4: " + (state.techTiebreaker+1), 0.05*c.width, 0.80*c.height);
+                    ctx.fillText("RND6: " + (state.contractTiebreaker+1), 0.05*c.width, 0.82*c.height);
 
-                    if (card.length > 3) {
+                    if (state.turnOrders != null) {
                         ctx.font = 80 * (c.width / background.width) + "px Blender Pro";
                         ctx.fillText(">", 0.66*c.width, 0.82*c.height);
                     }
@@ -88,30 +87,31 @@
                     c.width = h * img_ratio;
                     c.height = h;
                 }
-                refresh_canvas(current_card);
+                refresh_canvas();
             }
 
             window.onload = function() {
                 var c = document.getElementById("card");
                 c.onclick = function() {
-                    switch (current_phase) {
+                    switch (lacerda.currentPhase) {
                         case "shuttle":
-                            current_phase = "colonisation";
+                            lacerda.currentPhase = "colonisation";
+                            var s = lacerda.currentState();
 
                             var ctx = c.getContext("2d");
                             ctx.drawImage(turnorder, 0, 0, c.width, c.height);
-                            ctx.drawImage(primary_turnorders[current_card[3]], 0, 0, c.width, c.height);
-                            ctx.drawImage(secondary_turnorders[current_card[4]], 0, 0, c.width, c.height);
+                            ctx.drawImage(primary_turnorders[s.turnOrders[0]], 0, 0, c.width, c.height);
+                            ctx.drawImage(secondary_turnorders[s.turnOrders[1]], 0, 0, c.width, c.height);
                             break;
                         case "colonisation":
-                            current_card = draw();
-                            console.debug(current_card);
-                            refresh_canvas(current_card);
-                            if (current_card.length > 3) {
-                                current_phase = "shuttle";
+                            var s = lacerda.nextState();
+                            console.debug(s);
+                            refresh_canvas();
+                            if (s.turnOrders != null) {
+                                lacerda.currentPhase = "shuttle";
                             }
 
-                            if (current_round == 42) {
+                            if (lacerda.currentRound == 42) {
                                 alert("Congrats! You've just reached the Answer to the Ultimate Question of Life, the Universe, and Everything!");
                             }
                             break;
