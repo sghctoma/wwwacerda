@@ -118,23 +118,3 @@ class Lacerda {
         }
     }
 }
-
-lacerda = new Lacerda();
-console.debug(lacerda.currentState());
-/*
-console.debug(lacerda.nextState());
-console.debug(lacerda.nextState());
-console.debug(lacerda.nextState());
-
-console.debug(lacerda.prevState());
-console.debug(lacerda.prevState());
-console.debug(lacerda.prevState());
-console.debug(lacerda.prevState());
-
-//console.debug(lacerda.nextState());
-
-console.debug("------------------------------");
-
-console.debug(lacerda.history);
-console.debug(lacerda.currentRound);
-*/
