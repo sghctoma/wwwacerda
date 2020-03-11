@@ -39,6 +39,9 @@ class Lacerda {
         this.shuffledIndexes = [...Array(12).keys()];
         this.shuffle();
 
+        // Starting positions [Lacerda, player]
+        this.startPositions = this.distinctRandInts(8);
+
         this.currentRound = 0;
         this.currentPhase = "colonisation";
         this.history = [null];
@@ -46,6 +49,15 @@ class Lacerda {
 
     randInt(max) {
         return Math.floor(Math.random() * max);
+    }
+
+    distinctRandInts(max) {
+        var rnd1 = this.randInt(max);
+        var tmp = [...Array(max).keys()];
+        tmp.splice(rnd1, 1)
+        var rnd2 = tmp[this.randInt(max-1)];
+
+        return [rnd1, rnd2];
     }
 
     /*
@@ -85,12 +97,7 @@ class Lacerda {
             this.randInt(4));
 
         if (card.travel) {
-            var primaryTurnorder = this.randInt(4);
-            var tmp = [0, 1, 2, 3];
-            tmp.splice(primaryTurnorder, 1)
-            var secondaryTurnorder = tmp[this.randInt(3)];
-
-            state.turnOrders = [primaryTurnorder, secondaryTurnorder];
+            state.turnOrders = this.distinctRandInts(4);
         }
 
         this.history.push(state);
