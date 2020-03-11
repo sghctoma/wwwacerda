@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no">
+    <style>
+    @font-face {
+        font-family: 'Continuum Medium Regular';
+        font-style: normal;
+        font-weight: normal;
+        src: local('Continuum Medium Regular'), url('/assets/Contm___.woff') format('woff');
+    }
+    canvas {
+        padding: 0;
+        margin: auto;
+        display: block;
+    }
+    </style>
+    <script src="https://unpkg.com/konva@4.1.6/konva.min.js"></script>
+    </head>
+    <body>
+        <div id="container"></div>
+        <script src="graphics.js"></script>
+        <script>
+            var display = new Display();
+        </script>
+    </body>
+</html>
