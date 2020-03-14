@@ -43,7 +43,7 @@ class Lacerda {
         this.startPositions = this.distinctRandInts(8);
 
         this.currentRound = 0;
-        this.currentPhase = "colonisation";
+        this.currentPhase = "COLONISATION";
         this.history = [null];
     }
 
