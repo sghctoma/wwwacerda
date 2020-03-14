@@ -10,18 +10,19 @@ class Display {
         this.layer = new Konva.Layer();
 
         this.sources = {
+            background: '/assets/background.png',
             startscreen: '/assets/startscreen.png',
             button_reveal: '/assets/button_reveal.png',
             button_next: '/assets/button_next.png',
-
-            background: '/assets/background.png',
-            init_shuttle: '/assets/init_shuttle.png',
             shuttle: '/assets/shuttle.png',
-            next_round: '/assets/next_round.png',
+            shuttle_nogo: '/assets/shuttle_nogo.png',
+            shuttle_go_left: '/assets/shuttle_go_left.png',
+            shuttle_go_right: '/assets/shuttle_go_right.png'
         };
         this.labels = {};
         this.shapes = {};
         this.images = {};
+        this.buttons = {};
 
         this.setupLabels();
         this.setupShapes();
@@ -29,36 +30,64 @@ class Display {
     }
 
     renderStartScreen() {
-        this.images.button_reveal.on('click', () => {
-            var posLacerda = lacerda.startPositions[0];
-            this.shapes.dark_square.x(38+posLacerda*33+46*Math.floor(posLacerda/4));
-            this.layer.add(this.shapes.dark_square);
-            
-            var posPlayer = lacerda.startPositions[1];
-            this.shapes.light_square.x(38+posPlayer*33+46*Math.floor(posPlayer/4));
-            this.layer.add(this.shapes.light_square);
-
-            this.images.button_reveal.hide();
-            this.labels.reveal_start.hide();
-
-            this.images.button_next.on('click', () => {
-                this.layer.destroyChildren();
-                this.renderScreen();
-            });
-            this.layer.add(this.images.button_next);
-            this.layer.add(this.labels.first_round);
-            
-            this.layer.draw();
-        });
-
         this.layer.add(this.images.startscreen);
-        this.layer.add(this.images.button_reveal);
-        this.layer.add(this.labels.reveal_start);
+        this.layer.add(this.buttons['reveal']);
         this.stage.add(this.layer);
+    }
+
+    revealStartPosition() {
+        var posLacerda = lacerda.startPositions[0];
+        this.shapes.dark_square.x(38+posLacerda*33+46*Math.floor(posLacerda/4));
+        this.layer.add(this.shapes.dark_square);
+        
+        var posPlayer = lacerda.startPositions[1];
+        this.shapes.light_square.x(38+posPlayer*33+46*Math.floor(posPlayer/4));
+        this.layer.add(this.shapes.light_square);
+
+        this.buttons.reveal.hide();
+        this.layer.add(this.buttons.first_round);
+        
+        this.layer.draw();
     }
 
     renderScreen() {
         this.layer.add(this.images.background);
+
+        var state = this.lacerda.currentState();
+
+        // status bar
+        this.layer.add(this.labels.status);
+        this.labels.status.text(
+            "ROUND " +
+            this.lacerda.currentRound + 
+            " - " + 
+            this.lacerda.currentPhase +
+            " PHASE");
+
+        // phase marker
+        //TODO
+
+        // mission marker
+        if (state.mission == null) {
+            //this.labels.mission.text('X');
+            this.layer.add(this.shapes.inactive_mission);
+        } else {
+            //this.labels.mission.text(['A', 'B', 'C'][state.mission]);
+            this.layer.add(this.shapes.active_mission);
+        }
+        this.layer.add(this.labels.mission);
+        
+        // buttons
+        if (state.turnOrders != null) {
+            this.layer.add(this.buttons.init_shuttle);
+            this.layer.add(this.images.shuttle);
+            this.layer.add(this.images.shuttle_go_left);
+            this.layer.add(this.images.shuttle_go_right);
+        } else {
+            this.layer.add(this.buttons.next_round);
+            this.layer.add(this.images.shuttle_nogo);
+        }
+
         this.layer.draw();
     }
 
@@ -69,26 +98,29 @@ class Display {
         this.images['background'] = new Konva.Image({
             image: images.background,
         });
-        this.images['init_shuttle'] = new Konva.Image({
-            image: images.init_shuttle,
-            x: 97,
-            y: 620,
-        });
         this.images['shuttle'] = new Konva.Image({
             image: images.shuttle,
             x: this.stage.width() / 2 - images.shuttle.width / 2,
-            y: 580,
+            y: 581,
         });
-        this.images['button_reveal'] = new Konva.Image({
-            image: images.button_reveal,
-            x: this.stage.width() / 2 - images.button_reveal.width / 2,
-            y: 623,
+        this.images['shuttle_go_left'] = new Konva.Image({
+            image: images.shuttle_go_left,
+            x: 71,
+            y: 587,
         });
-        this.images['button_next'] = new Konva.Image({
-            image: images.button_next,
-            x: this.stage.width() / 2 - images.button_next.width / 2 + 10,
-            y: 635,
+        this.images['shuttle_go_right'] = new Konva.Image({
+            image: images.shuttle_go_right,
+            x: 260,
+            y: 587,
         });
+        this.images['shuttle_nogo'] = new Konva.Image({
+            image: images.shuttle_nogo,
+            x: this.stage.width() / 2 - images.shuttle_nogo.width / 2,
+            y: 581,
+        });
+
+        // call this from here because we need the images for the buttons
+        this.setupButtons(images);
 
         this.renderStartScreen();
     }
@@ -110,7 +142,7 @@ class Display {
     }
 
     setupLabels() {
-        this.labels['status_label'] = new Konva.Text({
+        this.labels['status'] = new Konva.Text({
             x: 0,
             y: 94,
             width: this.stage.width(),
@@ -118,7 +150,7 @@ class Display {
             fontFamily: 'Continuum Medium Regular',
             fontSize: 16,
             text: '',
-            fill: 'white'
+            fill: '#E5E5DE'
         });
         this.labels['action'] = new Konva.Text({
             x: 0,
@@ -140,45 +172,109 @@ class Display {
             text: '/',
             fill: 'white'
         });
-        this.labels['reveal_start'] = new Konva.Text({
+    }
+
+    setupButtons(images) {
+        // REVEAL START POSITION
+        var label1 = new Konva.Text({
             x: 0,
-            y: 647,
-            width: this.stage.width(),
+            y: 24,
+            width: images.button_reveal.width,
             align: 'center',
             fontFamily: 'Continuum Medium Regular',
             fontSize: 14,
+            padding: 1.5,
             text: 'REVEAL START POSITION',
             fill: '#24C5A3'
         });
-        this.labels['init_shuttle_label'] = new Konva.Text({
-            x: 0,
-            y: 647,
-            width: this.stage.width(),
-            align: 'center',
-            fontFamily: 'Continuum Medium Regular',
-            fontSize: 14,
-            text: 'INITIATE SHUTTLE PHASE',
-            fill: '#24C5A3'
+        var image1 = new Konva.Image({
+            image: images.button_reveal,
         });
-        this.labels['first_round'] = new Konva.Text({
+        this.buttons['reveal'] = new Konva.Group({
+            x: this.stage.width() / 2 - images.button_reveal.width / 2,
+            y: 623,
+        });
+        this.buttons['reveal'].add(image1);
+        this.buttons['reveal'].add(label1);
+        this.buttons['reveal'].on('click tap', () => {
+            this.revealStartPosition();
+        });
+
+        // FIRST ROUND
+        var label2 = new Konva.Text({
             x: 0,
-            y: 650,
-            width: this.stage.width(),
+            y: 12,
+            width: images.button_next.width - 9,
             align: 'center',
             fontFamily: 'Continuum Medium Regular',
             fontSize: 14,
+            padding: 1.5,
             text: 'FIRST ROUND',
             fill: '#0E4B47'
         });
-        this.labels['next_round'] = new Konva.Text({
+        var image2 = new Konva.Image({
+            image: images.button_next
+        });
+        this.buttons['first_round'] = new Konva.Group({
+            x: this.stage.width() / 2 - images.button_next.width / 2 + 5,
+            y: 635,
+        });
+        this.buttons['first_round'].add(image2);
+        this.buttons['first_round'].add(label2);
+        this.buttons['first_round'].on('click tap', () => {
+            this.lacerda.nextState();
+            this.layer.destroyChildren();
+            this.renderScreen();
+        });
+
+        // NEXT ROUND
+        var label3 = new Konva.Text({
             x: 0,
-            y: 647,
-            width: this.stage.width(),
+            y: 12,
+            width: images.button_next.width,
             align: 'center',
             fontFamily: 'Continuum Medium Regular',
             fontSize: 14,
+            padding: 1.5,
             text: 'NEXT ROUND',
             fill: '#0E4B47'
+        });
+        var image3 = new Konva.Image({
+            image: images.button_next
+        });
+        this.buttons['next_round'] = new Konva.Group({
+            x: this.stage.width() / 2 - images.button_next.width / 2 + 5,
+            y: 635,
+        });
+        this.buttons['next_round'].add(image3);
+        this.buttons['next_round'].add(label3);
+        this.buttons['next_round'].on('click tap', () => {
+            alert('1337');
+        });
+
+        // INITIATE SHUTTLE PHASE
+        var label4 = new Konva.Text({
+            x: 0,
+            y: 24,
+            width: images.button_reveal.width,
+            align: 'center',
+            fontFamily: 'Continuum Medium Regular',
+            fontSize: 14,
+            padding: 1.5,
+            text: 'INITIATE SHUTTLE PHASE',
+            fill: '#24C5A3'
+        });
+        var image4 = new Konva.Image({
+            image: images.button_reveal
+        });
+        this.buttons['init_shuttle'] = new Konva.Group({
+            x: this.stage.width() / 2 - images.button_reveal.width / 2,
+            y: 623,
+        });
+        this.buttons['init_shuttle'].add(image4);
+        this.buttons['init_shuttle'].add(label4);
+        this.buttons['init_shuttle'].on('click tap', () => {
+            alert('1338');
         });
     }
 
