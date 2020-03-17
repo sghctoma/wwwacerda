@@ -28,13 +28,11 @@
             var display = new Display(lacerda);
 
             window.onresize = function() {
-                console.log("resizing window");
-
                 var c = document.getElementById("container");
 
-                img_ratio = 380 / 726; //XXX
-                w = window.innerWidth;
-                h = window.innerHeight;
+                img_ratio = 845 / 1515; //XXX
+                w = 0.98 * window.innerWidth;
+                h = 0.98 * window.innerHeight;
                 if (w/h <= img_ratio) {
                     c.width = w;
                     c.height = w / img_ratio;
@@ -45,7 +43,7 @@
 
                 display.stage.width(c.width);
                 display.stage.height(c.height);
-                display.stage.scale({x: c.width/380, y: c.height/726});
+                display.stage.scale({x: c.width/845, y: c.height/1515});
                 display.stage.draw();
             }
 
