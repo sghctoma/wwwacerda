@@ -108,6 +108,7 @@ class Lacerda {
     }
 
     nextState() {
+        this.currentPhase = 'COLONISATION';
         this.currentRound += 1;
         if (this.history.length <= this.currentRound) {
             this.draw();
@@ -117,6 +118,7 @@ class Lacerda {
     }
 
     prevState() {
+        this.currentPhase = 'COLONISATION';
         if (this.currentRound == 1) {
             return null;
         } else {
