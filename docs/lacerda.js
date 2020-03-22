@@ -7,11 +7,11 @@ class Card {
 }
 
 class State {
-    constructor(action, mission, hexTiebreaker, contractTiebreaker, techTiebreaker) {
+    constructor(action, mission, hexTiebreaker, cardTiebreaker, techTiebreaker) {
         this.action = action;
         this.mission = mission;
         this.hexTiebreaker = hexTiebreaker;
-        this.contractTiebreaker = contractTiebreaker;
+        this.cardTiebreaker = cardTiebreaker;
         this.techTiebreaker = techTiebreaker;
         this.turnOrders = null;
     }
@@ -40,7 +40,7 @@ class Lacerda {
         this.shuffle();
 
         // Starting positions [Lacerda, player]
-        this.startPositions = this.distinctRandInts(8);
+        this.startPositions = this.distinctRandIntsFromArray([1, 2, 3, 5, 6, 7]);
 
         this.currentRound = 0;
         this.currentPhase = "COLONISATION";
@@ -51,6 +51,15 @@ class Lacerda {
         return Math.floor(Math.random() * max);
     }
 
+    distinctRandIntsFromArray(arr) {
+        var index1 = this.randInt(arr.length);
+        var rnd1 = arr[index1];
+        arr.splice(index1, 1);
+        var rnd2 = arr[this.randInt(arr.length)];
+
+        return [rnd1, rnd2];
+    }
+    
     distinctRandInts(max) {
         var rnd1 = this.randInt(max);
         var tmp = [...Array(max).keys()];
